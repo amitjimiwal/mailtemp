@@ -1,10 +1,12 @@
 const { Client, Databases, Account ,Query} = require("node-appwrite");
+import { Users } from "node-appwrite";
 import config from "../config/config";
 
 class AppService {
      client = new Client();
      private databases;
      account;
+     users;
      constructor() {
           this.client
                .setEndpoint(config.appwriteURL)
@@ -12,6 +14,7 @@ class AppService {
                .setKey(config.appwriteAPIKey);
           this.databases = new Databases(this.client);
           this.account = new Account(this.client);
+          this.users= new Users(this.client);
      }
      async getUsers() {
           try {
@@ -19,7 +22,7 @@ class AppService {
                     config.databaseID,
                     config.userCollectionID
                );
-               return users.documents;
+               return users.documents.filter((a: { isEmailReminder: boolean; }) => a.isEmailReminder===true);
           } catch (error) {
                console.error("Error fetching users:", error);
           }
@@ -40,6 +43,15 @@ class AppService {
           } catch (error) {
                console.error("Error fetching user reads:", error);
           }
+     }
+     async getUserEmail(userID: string) {
+          try {
+               const user = await this.users.get(userID);
+               return user;
+          } catch (error) {
+               console.error("Error fetching user email:", error);
+          }
+     
      }
 }
 
