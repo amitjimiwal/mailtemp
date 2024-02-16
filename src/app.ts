@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import config from './config/config';
 import appService from './appwrite/appService';
 import createEmail from './template/mailcontent';
-const cron=require('node-cron');
+const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const port = process.env.PORT || 8000;
 const app: Application = express();
@@ -37,13 +37,17 @@ async function sendMail() {
     }
   });
 }
+
+cron.schedule('0 0 * * *', () => {
+  sendMail();
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata"
+});
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('Server is running');
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-const task = cron.schedule('0 0 * * *', () => {
-  sendMail();
-});
-
-// Start the scheduled task
-task.start();
