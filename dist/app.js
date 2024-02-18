@@ -44,16 +44,20 @@ function sendMail() {
                     html: (0, mailcontent_1.default)(unReadReads, (userData === null || userData === void 0 ? void 0 : userData.name) || "")
                 };
                 //3. send email
-                transporter.sendMail(mailOptions).then((info) => {
-                    console.log('Email sent to:', userData === null || userData === void 0 ? void 0 : userData.email, info.response);
-                }).catch((error) => {
-                    console.log('Error in :', userData === null || userData === void 0 ? void 0 : userData.email, error);
-                });
+                yield new Promise((resolve, reject) => {
+                    transporter.sendMail(mailOptions).then((info) => {
+                        console.log('Email sent to:', userData === null || userData === void 0 ? void 0 : userData.email, info.response);
+                        resolve(info);
+                    }).catch((error) => {
+                        console.log('Error in :', userData === null || userData === void 0 ? void 0 : userData.email, error);
+                        reject(error);
+                    });
+                }); //dummy promise
             }
         }));
     });
 }
-cron.schedule('0 0 * * *', () => {
+cron.schedule('* * * * *', () => {
     sendMail();
 }, {
     scheduled: true,

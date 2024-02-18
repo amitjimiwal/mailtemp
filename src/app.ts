@@ -29,16 +29,20 @@ async function sendMail() {
         html: createEmail(unReadReads, userData?.name || "")
       }
       //3. send email
-      transporter.sendMail(mailOptions).then((info: any) => {
-        console.log('Email sent to:', userData?.email, info.response);
-      }).catch((error: any) => {
-        console.log('Error in :', userData?.email, error);
-      });
+      await new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions).then((info: any) => {
+          console.log('Email sent to:', userData?.email, info.response);
+          resolve(info);
+        }).catch((error: any) => {
+          console.log('Error in :', userData?.email, error);
+          reject(error);
+        });
+      }); //dummy promise
     }
   });
 }
 
-cron.schedule('0 0 * * *', () => {
+cron.schedule('* * * * *', () => {
   sendMail();
 }, {
   scheduled: true,
