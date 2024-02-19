@@ -45,7 +45,7 @@ async function sendMail() {
   });
 }
 
-cron.schedule('* * * * *', () => {
+cron.schedule('0 0 * * *', () => {
   sendMail();
 }, {
   scheduled: true,
