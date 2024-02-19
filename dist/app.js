@@ -25,6 +25,9 @@ function sendMail() {
     return __awaiter(this, void 0, void 0, function* () {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: config_1.default.hostEmail,
                 pass: config_1.default.hostEmailPassword
