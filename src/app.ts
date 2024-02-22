@@ -2,10 +2,9 @@ import express, { Application, Request, Response } from 'express';
 import config from './config/config';
 import appService from './appwrite/appService';
 import createEmail from './template/mailcontent';
-const cron = require('node-cron');
 const nodemailer = require('nodemailer');
-const port = process.env.PORT || 8000;
 const app: Application = express();
+const schedule = require('node-schedule');
 let users = [];
 async function sendMail() {
   const transporter = nodemailer.createTransport({
@@ -45,16 +44,6 @@ async function sendMail() {
   });
 }
 
-cron.schedule('0 0 * * *', () => {
+schedule.scheduleJob('12 18 * * *', () => {
   sendMail();
-}, {
-  scheduled: true,
-  timezone: "Asia/Kolkata"
-});
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Server is running');
-});
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
 });

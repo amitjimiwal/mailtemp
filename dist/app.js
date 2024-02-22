@@ -16,10 +16,9 @@ const express_1 = __importDefault(require("express"));
 const config_1 = __importDefault(require("./config/config"));
 const appService_1 = __importDefault(require("./appwrite/appService"));
 const mailcontent_1 = __importDefault(require("./template/mailcontent"));
-const cron = require('node-cron');
 const nodemailer = require('nodemailer');
-const port = process.env.PORT || 8000;
 const app = (0, express_1.default)();
+const schedule = require('node-schedule');
 let users = [];
 function sendMail() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -60,15 +59,6 @@ function sendMail() {
         }));
     });
 }
-cron.schedule('0 0 * * *', () => {
+schedule.scheduleJob('12 18 * * *', () => {
     sendMail();
-}, {
-    scheduled: true,
-    timezone: "Asia/Kolkata"
-});
-app.get('/', (req, res) => {
-    res.send('Server is running');
-});
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
 });
