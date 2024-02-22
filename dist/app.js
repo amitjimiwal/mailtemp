@@ -60,7 +60,7 @@ function sendMail() {
         }));
     });
 }
-schedule.scheduleJob('12 18 * * *', () => {
+schedule.scheduleJob('45 22 * * *', () => {
     sendMail();
 });
 app.get('/', (req, res) => {
