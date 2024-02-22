@@ -4,6 +4,7 @@ import appService from './appwrite/appService';
 import createEmail from './template/mailcontent';
 const nodemailer = require('nodemailer');
 const app: Application = express();
+const port=process.env.PORT || 8000;
 const schedule = require('node-schedule');
 let users = [];
 async function sendMail() {
@@ -46,4 +47,11 @@ async function sendMail() {
 
 schedule.scheduleJob('12 18 * * *', () => {
   sendMail();
+});
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello World!');
+});
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

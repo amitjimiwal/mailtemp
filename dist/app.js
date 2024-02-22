@@ -18,6 +18,7 @@ const appService_1 = __importDefault(require("./appwrite/appService"));
 const mailcontent_1 = __importDefault(require("./template/mailcontent"));
 const nodemailer = require('nodemailer');
 const app = (0, express_1.default)();
+const port = process.env.PORT || 8000;
 const schedule = require('node-schedule');
 let users = [];
 function sendMail() {
@@ -61,4 +62,10 @@ function sendMail() {
 }
 schedule.scheduleJob('12 18 * * *', () => {
     sendMail();
+});
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
