@@ -60,8 +60,10 @@ function sendMail() {
         }));
     });
 }
-schedule.scheduleJob('45 22 * * *', () => {
+schedule.scheduleJob('9 21 * * *', () => {
+    console.log('Running cron job');
     sendMail();
+    console.log('Cron job completed');
 });
 app.get('/', (req, res) => {
     res.send('Hello World!');
