@@ -48,19 +48,30 @@ function sendMail() {
                 };
                 //3. send email
                 yield new Promise((resolve, reject) => {
-                    transporter.sendMail(mailOptions).then((info) => {
-                        console.log('Email sent to:', userData === null || userData === void 0 ? void 0 : userData.email, info.response);
-                        resolve(info);
-                    }).catch((error) => {
-                        console.log('Error in :', userData === null || userData === void 0 ? void 0 : userData.email, error);
-                        reject(error);
+                    transporter.sendMail(mailOptions, (err, info) => {
+                        if (err) {
+                            console.log('Error in :', userData === null || userData === void 0 ? void 0 : userData.email, err);
+                            reject(err);
+                        }
+                        else {
+                            console.log('Email sent to:', userData === null || userData === void 0 ? void 0 : userData.email, info.response);
+                            resolve(info);
+                        }
                     });
-                }); //dummy promise
+                    // }).then((info: any) => {
+                    //         console.log('Email sent to:', userData?.email, info.response);
+                    //         resolve(info);
+                    //       }).catch((error: any) => {
+                    //         console.log('Error in :', userData?.email, error);
+                    //         reject(error);
+                    //       });
+                    //     }); //dummy promise
+                });
             }
         }));
     });
 }
-schedule.scheduleJob('9 21 * * *', () => {
+schedule.scheduleJob('35 22 * * *', () => {
     console.log('Running cron job');
     sendMail();
     console.log('Cron job completed');

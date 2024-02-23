@@ -4,7 +4,7 @@ import appService from './appwrite/appService';
 import createEmail from './template/mailcontent';
 const nodemailer = require('nodemailer');
 const app: Application = express();
-const port=process.env.PORT || 8000;
+const port = process.env.PORT || 8000;
 const schedule = require('node-schedule');
 let users = [];
 async function sendMail() {
@@ -33,19 +33,29 @@ async function sendMail() {
       }
       //3. send email
       await new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions).then((info: any) => {
-          console.log('Email sent to:', userData?.email, info.response);
-          resolve(info);
-        }).catch((error: any) => {
-          console.log('Error in :', userData?.email, error);
-          reject(error);
+        transporter.sendMail(mailOptions, (err: any, info: any) => {
+          if (err) {
+            console.log('Error in :', userData?.email, err);
+            reject(err);
+          } else {
+            console.log('Email sent to:', userData?.email, info.response);
+            resolve(info);
+          }
         });
-      }); //dummy promise
+        // }).then((info: any) => {
+        //         console.log('Email sent to:', userData?.email, info.response);
+        //         resolve(info);
+        //       }).catch((error: any) => {
+        //         console.log('Error in :', userData?.email, error);
+        //         reject(error);
+        //       });
+        //     }); //dummy promise
+      });
     }
-  });
+  })
 }
 
-schedule.scheduleJob('9 21 * * *', () => {
+schedule.scheduleJob('35 22 * * *', () => {
   console.log('Running cron job');
   sendMail();
   console.log('Cron job completed');
