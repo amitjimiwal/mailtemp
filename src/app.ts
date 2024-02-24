@@ -60,9 +60,11 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/sendmail', async (req: Request, res: Response) => {
   try {
     console.log('Sending mail');
-    await sendMail();
+    await sendMail(); 
+    res.json({ message: 'Mail sent successfully' });
   } catch (error) {
     console.log('Error in sending mail:', error);
+    res.status(500).json({ error: 'Error in sending mail' });
   }
 });
 
