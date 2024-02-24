@@ -71,14 +71,23 @@ function sendMail() {
         }));
     });
 }
-schedule.scheduleJob('35 22 * * *', () => {
-    console.log('Running cron job');
-    sendMail();
-    console.log('Cron job completed');
-});
+// schedule.scheduleJob('35 22 * * *', () => {
+//   console.log('Running cron job');
+//   sendMail();
+//   console.log('Cron job completed');
+// });
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Server working fine!');
 });
+app.get('/sendmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log('Sending mail');
+        yield sendMail();
+    }
+    catch (error) {
+        console.log('Error in sending mail:', error);
+    }
+}));
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

@@ -55,15 +55,25 @@ async function sendMail() {
   })
 }
 
-schedule.scheduleJob('35 22 * * *', () => {
-  console.log('Running cron job');
-  sendMail();
-  console.log('Cron job completed');
-});
+// schedule.scheduleJob('35 22 * * *', () => {
+//   console.log('Running cron job');
+//   sendMail();
+//   console.log('Cron job completed');
+// });
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.send('Server working fine!');
 });
+
+app.get('/sendmail', async (req: Request, res: Response) => {
+  try {
+    console.log('Sending mail');
+    await sendMail();
+  } catch (error) {
+    console.log('Error in sending mail:', error);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
