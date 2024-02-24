@@ -58,14 +58,6 @@ function sendMail() {
                             resolve(info);
                         }
                     });
-                    // }).then((info: any) => {
-                    //         console.log('Email sent to:', userData?.email, info.response);
-                    //         resolve(info);
-                    //       }).catch((error: any) => {
-                    //         console.log('Error in :', userData?.email, error);
-                    //         reject(error);
-                    //       });
-                    //     }); //dummy promise
                 });
             }
         }));

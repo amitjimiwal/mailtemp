@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/sendmail",
-      "schedule": "34 10 * * *"
+      "schedule": "39 10 * * *"
     }
   ],
   "builds": [
