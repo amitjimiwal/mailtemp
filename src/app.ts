@@ -46,13 +46,6 @@ async function sendMail() {
     }
   })
 }
-
-// schedule.scheduleJob('35 22 * * *', () => {
-//   console.log('Running cron job');
-//   sendMail();
-//   console.log('Cron job completed');
-// });
-
 app.get('/', (req: Request, res: Response) => {
   res.send('Server working fine!');
 });
