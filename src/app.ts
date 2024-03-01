@@ -3,12 +3,16 @@ import config from './config/config';
 import appService from './appwrite/appService';
 import createEmail from './template/mailcontent';
 const nodemailer = require('nodemailer');
-const port = process.env.PORT || 8000;
 const app: Application = express();
+const port = process.env.PORT || 8000;
+const schedule = require('node-schedule');
 let users = [];
 async function sendMail() {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
       user: config.hostEmail,
       pass: config.hostEmailPassword
@@ -28,16 +32,22 @@ async function sendMail() {
         html: createEmail(unReadReads, userData?.name || "")
       }
       //3. send email
-      transporter.sendMail(mailOptions).then((info: any) => {
-        console.log('Email sent to:', userData?.email, info.response);
-      }).catch((error: any) => {
-        console.log('Error in :', userData?.email, error);
+      await new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (err: any, info: any) => {
+          if (err) {
+            console.log('Error in :', userData?.email, err);
+            reject(err);
+          } else {
+            console.log('Email sent to:', userData?.email, info.response);
+            resolve(info);
+          }
+        });
       });
     }
-  });
+  })
 }
 app.get('/', (req: Request, res: Response) => {
-  res.send('Server is running');
+  res.send('Server working fine!');
 });
 
 app.get('/sendmail', async (req: Request, res: Response) => {

@@ -17,13 +17,17 @@ const config_1 = __importDefault(require("./config/config"));
 const appService_1 = __importDefault(require("./appwrite/appService"));
 const mailcontent_1 = __importDefault(require("./template/mailcontent"));
 const nodemailer = require('nodemailer');
-const port = process.env.PORT || 8000;
 const app = (0, express_1.default)();
+const port = process.env.PORT || 8000;
+const schedule = require('node-schedule');
 let users = [];
 function sendMail() {
     return __awaiter(this, void 0, void 0, function* () {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: config_1.default.hostEmail,
                 pass: config_1.default.hostEmailPassword
@@ -43,17 +47,24 @@ function sendMail() {
                     html: (0, mailcontent_1.default)(unReadReads, (userData === null || userData === void 0 ? void 0 : userData.name) || "")
                 };
                 //3. send email
-                transporter.sendMail(mailOptions).then((info) => {
-                    console.log('Email sent to:', userData === null || userData === void 0 ? void 0 : userData.email, info.response);
-                }).catch((error) => {
-                    console.log('Error in :', userData === null || userData === void 0 ? void 0 : userData.email, error);
+                yield new Promise((resolve, reject) => {
+                    transporter.sendMail(mailOptions, (err, info) => {
+                        if (err) {
+                            console.log('Error in :', userData === null || userData === void 0 ? void 0 : userData.email, err);
+                            reject(err);
+                        }
+                        else {
+                            console.log('Email sent to:', userData === null || userData === void 0 ? void 0 : userData.email, info.response);
+                            resolve(info);
+                        }
+                    });
                 });
             }
         }));
     });
 }
 app.get('/', (req, res) => {
-    res.send('Server is running');
+    res.send('Server working fine!');
 });
 app.get('/sendmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
