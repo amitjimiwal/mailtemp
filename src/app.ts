@@ -54,10 +54,10 @@ app.get('/sendmail', async (req: Request, res: Response) => {
   try {
     console.log('Sending mail');
     await sendMail(); 
-    res.json({ message: 'Mail sent successfully' });
+    res.send("Done");
   } catch (error) {
     console.log('Error in sending mail:', error);
-    res.status(500).json({ error: 'Error in sending mail' });
+    res.status(500).send("{ error: 'Error in sending mail' }");
   }
 });
 

@@ -70,11 +70,11 @@ app.get('/sendmail', (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         console.log('Sending mail');
         yield sendMail();
-        res.json({ message: 'Mail sent successfully' });
+        res.send("Done");
     }
     catch (error) {
         console.log('Error in sending mail:', error);
-        res.status(500).json({ error: 'Error in sending mail' });
+        res.status(500).send("{ error: 'Error in sending mail' }");
     }
 }));
 app.listen(port, () => {
