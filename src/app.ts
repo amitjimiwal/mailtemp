@@ -2,7 +2,6 @@ import express, { Application, Request, Response } from 'express';
 import config from './config/config';
 import appService from './appwrite/appService';
 import createEmail from './template/mailcontent';
-const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const port = process.env.PORT || 8000;
 const app: Application = express();
@@ -37,17 +36,21 @@ async function sendMail() {
     }
   });
 }
-
-cron.schedule('0 0 * * *', () => {
-  sendMail();
-}, {
-  scheduled: true,
-  timezone: "Asia/Kolkata"
-});
-
 app.get('/', (req: Request, res: Response) => {
   res.send('Server is running');
 });
+
+app.get('/sendmail', async (req: Request, res: Response) => {
+  try {
+    console.log('Sending mail');
+    await sendMail(); 
+    res.send("Done");
+  } catch (error) {
+    console.log('Error in sending mail:', error);
+    res.status(500).send("{ error: 'Error in sending mail' }");
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
