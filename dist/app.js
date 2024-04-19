@@ -13,69 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const config_1 = __importDefault(require("./config/config"));
-const appService_1 = __importDefault(require("./appwrite/appService"));
-const mailcontent_1 = __importDefault(require("./template/mailcontent"));
-const nodemailer = require('nodemailer');
+const sendMail_1 = __importDefault(require("./utils/sendMail"));
+const node_cron_1 = __importDefault(require("node-cron"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
-const schedule = require('node-schedule');
-let users = [];
-function sendMail() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false,
-            auth: {
-                user: config_1.default.hostEmail,
-                pass: config_1.default.hostEmailPassword
-            }
-        });
-        //fetch all users
-        users = yield appService_1.default.getUsers();
-        users.forEach((user) => __awaiter(this, void 0, void 0, function* () {
-            const unReadReads = yield appService_1.default.getUserUnReads(user.userID);
-            const userData = yield appService_1.default.getUserEmail(user.userID);
-            //2.configure email content.
-            if (unReadReads.length > 0) {
-                const mailOptions = {
-                    from: config_1.default.hostEmail,
-                    to: userData === null || userData === void 0 ? void 0 : userData.email,
-                    subject: 'ReadLogs Reminder',
-                    html: (0, mailcontent_1.default)(unReadReads, (userData === null || userData === void 0 ? void 0 : userData.name) || "")
-                };
-                //3. send email
-                yield new Promise((resolve, reject) => {
-                    transporter.sendMail(mailOptions, (err, info) => {
-                        if (err) {
-                            console.log('Error in :', userData === null || userData === void 0 ? void 0 : userData.email, err);
-                            reject(err);
-                        }
-                        else {
-                            console.log('Email sent to:', userData === null || userData === void 0 ? void 0 : userData.email, info.response);
-                            resolve(info);
-                        }
-                    });
-                });
-            }
-        }));
-    });
-}
-app.get('/', (req, res) => {
+app.get('/live', (req, res) => {
     res.send('Server working fine!');
 });
-app.get('/sendmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        console.log('Sending mail');
-        yield sendMail();
-        res.send("Done");
-    }
-    catch (error) {
-        console.log('Error in sending mail:', error);
-        res.status(500).send("{ error: 'Error in sending mail' }");
-    }
+node_cron_1.default.schedule('9 21 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, sendMail_1.default)();
+    console.log('running a task every minute');
 }));
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

@@ -24,12 +24,15 @@
     "dotenv": "^16.4.4",
     "express": "^4.18.2",
     "node-appwrite": "^11.1.0",
-    "node-schedule": "^2.1.1",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.9",
     "nodemon": "^3.0.3",
     "pre-commit": "^1.2.2",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.11"
   }
 }
